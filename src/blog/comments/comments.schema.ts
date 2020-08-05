@@ -1,16 +1,9 @@
-import { ObjectType, Field, ID } from 'type-graphql'
+import { ObjectType, Field, ID } from '@nestjs/graphql'
 
 @ObjectType()
 export class Comment {
-  @Field(type => ID)
-  id: string
-
-  @Field()
-  userName: string
-
-  @Field()
-  content: string
-
-  @Field()
-  createdAt: Date
+  @Field(() => ID) id: string
+  @Field() userName: string
+  @Field() content: string
+  @Field() createdAt: Date
 }

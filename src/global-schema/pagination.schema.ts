@@ -2,10 +2,10 @@ import {
   InterfaceType,
   ObjectType,
   Field,
-  ClassType,
   Int,
-  InputType
-} from 'type-graphql'
+  InputType,
+} from '@nestjs/graphql'
+import { ClassType } from 'type-graphql'
 
 @InterfaceType()
 abstract class Edge<T> {
@@ -21,7 +21,7 @@ class PageInfo {
   @Field()
   end: string
 
-  @Field(type => Int)
+  @Field((type) => Int)
   totalPages: number
 
   @Field()
@@ -32,7 +32,7 @@ class PageInfo {
 
 @InterfaceType()
 export abstract class IPaginatedResource<T> {
-  @Field(type => Int)
+  @Field((type) => Int)
   totalCount: number
 
   @Field()
@@ -40,7 +40,7 @@ export abstract class IPaginatedResource<T> {
 
   nodes: T[]
 
-  @Field(type => [Edge])
+  @Field((type) => [Edge])
   edges: Edge<T>[]
 }
 
@@ -49,7 +49,7 @@ function makeEdge<T>(Type: ClassType<T>): Edge<T> {
   class EdgeBuilder implements Edge<T> {
     @Field()
     cursor: string
-    @Field(type => Type)
+    @Field((type) => Type)
     node: T
   }
   //@ts-ignore
@@ -60,16 +60,16 @@ export function Feed<T>(Type: ClassType<T>): IPaginatedResource<T> {
   const TypeEdge = makeEdge(Type)
   @ObjectType(`${Type.name}Feed`, { implements: IPaginatedResource })
   class PaginatedResourceBuild implements IPaginatedResource<T> {
-    @Field(type => Int)
+    @Field((type) => Int)
     totalCount: number
 
     @Field()
     pageInfo: PageInfo
 
-    @Field(type => [Type])
+    @Field((type) => [Type])
     nodes: T[]
 
-    @Field(type => [TypeEdge])
+    @Field((type) => [TypeEdge])
     edges: Edge<T>[]
   }
   //@ts-ignore
@@ -78,15 +78,15 @@ export function Feed<T>(Type: ClassType<T>): IPaginatedResource<T> {
 
 @InputType()
 export class PageParams {
-  @Field(type => Int)
+  @Field((type) => Int)
   count: number
 
-  @Field(type => Int, { nullable: true })
+  @Field((type) => Int, { nullable: true })
   currentPage?: number
 
   @Field({ nullable: true })
   after?: string
 
-  @Field(type => Int, { nullable: true })
+  @Field((type) => Int, { nullable: true })
   goToPage?: number
 }
